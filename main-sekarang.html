@@ -1,1089 +1,1322 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#061a3a" />
-  <title>BluePlay — Video Profile</title>
-
-  <style>
-    :root{
-      --bg:#020817;
-      --bg2:#061a3a;
-      --card:#08285a;
-      --card2:#0b3675;
-      --blue:#18a8ff;
-      --blue2:#006cff;
-      --cyan:#51e8ff;
-      --text:#f5fbff;
-      --muted:#91a9c8;
-      --line:rgba(108,190,255,.20);
-      --shadow:0 18px 55px rgba(0,70,180,.30);
-    }
-
-    *{
-      box-sizing:border-box;
-      -webkit-tap-highlight-color:transparent;
-    }
-
-    html{
-      scroll-behavior:smooth;
-    }
-
-    body{
-      margin:0;
-      background:
-        radial-gradient(circle at 20% 0%, rgba(0,132,255,.22), transparent 30%),
-        radial-gradient(circle at 100% 35%, rgba(0,229,255,.13), transparent 27%),
-        linear-gradient(180deg,#020817 0%,#03142e 45%,#020817 100%);
-      color:var(--text);
-      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      min-height:100vh;
-    }
-
-    a{
-      text-decoration:none;
-      color:inherit;
-    }
-
-    button{
-      font:inherit;
-    }
-
-    /* =====================================================
-       APP
-       ===================================================== */
-
-    .app{
-      width:min(100%, 520px);
-      min-height:100vh;
-      margin:auto;
-      position:relative;
-      overflow:hidden;
-      background:
-        linear-gradient(180deg,rgba(5,28,65,.76),rgba(2,8,23,.97)),
-        radial-gradient(circle at 50% 20%,rgba(24,168,255,.10),transparent 35%);
-      box-shadow:0 0 80px rgba(0,119,255,.12);
-    }
-
-    /* =====================================================
-       TOP BAR
-       ===================================================== */
-
-    .topbar{
-      position:fixed;
-      z-index:50;
-      top:0;
-      left:50%;
-      transform:translateX(-50%);
-      width:min(100%,520px);
-      height:56px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:8px 14px;
-      background:linear-gradient(
-        180deg,
-        rgba(2,12,31,.92),
-        rgba(2,12,31,.45),
-        transparent
-      );
-      backdrop-filter:blur(10px);
-    }
-
-    .brand-dot{
-      width:36px;
-      height:36px;
-      border-radius:12px;
-      display:grid;
-      place-items:center;
-      font-weight:900;
-      font-size:14px;
-      background:linear-gradient(135deg,var(--cyan),var(--blue2));
-      box-shadow:0 0 25px rgba(24,168,255,.45);
-    }
-
-    .top-actions{
-      display:flex;
-      gap:8px;
-    }
-
-    .icon-btn{
-      width:38px;
-      height:38px;
-      border:1px solid rgba(145,215,255,.22);
-      border-radius:12px;
-      background:rgba(4,25,57,.62);
-      color:white;
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      backdrop-filter:blur(10px);
-    }
-
-    /* =====================================================
-       COVER
-       ===================================================== */
-
-    .cover{
-      margin-top:0;
-      aspect-ratio:16/9;
-      position:relative;
-      overflow:hidden;
-      background:#031936;
-    }
-
-    .cover img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
-
-    .cover::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:
-        linear-gradient(
-          180deg,
-          rgba(0,0,0,.04) 45%,
-          rgba(1,8,22,.82) 100%
-        );
-      pointer-events:none;
-    }
-
-    .cover-title{
-      position:absolute;
-      z-index:2;
-      left:16px;
-      right:16px;
-      bottom:13px;
-      font-size:13px;
-      font-weight:800;
-      letter-spacing:.7px;
-      text-shadow:0 2px 14px #000;
-    }
-
-    /* =====================================================
-       PROFILE
-       ===================================================== */
-
-    .profile{
-      padding:0 16px 12px;
-      position:relative;
-    }
-
-    .avatar{
-      width:88px;
-      height:88px;
-      border-radius:50%;
-      border:4px solid #061a3a;
-      position:relative;
-      margin-top:-44px;
-      object-fit:cover;
-      background:linear-gradient(135deg,#0fd8ff,#0756ff);
-      box-shadow:
-        0 8px 28px rgba(0,0,0,.4),
-        0 0 0 1px rgba(110,210,255,.28);
-      z-index:4;
-    }
-
-    .online{
-      position:absolute;
-      left:80px;
-      top:30px;
-      width:15px;
-      height:15px;
-      border-radius:50%;
-      background:#24ff8a;
-      border:3px solid #061a3a;
-      box-shadow:0 0 15px #24ff8a;
-    }
-
-    .name-row{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      margin-top:8px;
-    }
-
-    .name{
-      font-size:21px;
-      font-weight:900;
-      letter-spacing:.2px;
-    }
-
-    .verified{
-      width:19px;
-      height:19px;
-      border-radius:50%;
-      display:grid;
-      place-items:center;
-      background:linear-gradient(135deg,#36ddff,#0074ff);
-      font-size:11px;
-      font-weight:900;
-    }
-
-    .username{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:2px;
-    }
-
-    .stats{
-      display:flex;
-      gap:17px;
-      font-size:12px;
-      font-weight:800;
-      margin:12px 0;
-    }
-
-    .stats span{
-      color:#dceeff;
-    }
-
-    .stats small{
-      color:var(--muted);
-      font-weight:600;
-    }
-
-    /* =====================================================
-       MENU
-       ===================================================== */
-
-    .long-menu{
-      position:relative;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      width:100%;
-      min-height:54px;
-      border:1px solid rgba(83,201,255,.30);
-      border-radius:17px;
-      background:
-        linear-gradient(
-          100deg,
-          rgba(0,92,255,.25),
-          rgba(0,214,255,.13)
-        ),
-        rgba(3,25,58,.75);
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      animation:floatPulse 2.8s ease-in-out infinite;
-    }
-
-    .long-menu::before{
-      content:"";
-      position:absolute;
-      inset:-100% 30%;
-      background:
-        linear-gradient(
-          90deg,
-          transparent,
-          rgba(255,255,255,.18),
-          transparent
-        );
-      transform:rotate(20deg);
-      animation:shine 3.5s linear infinite;
-    }
-
-    .long-menu .content{
-      position:relative;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      z-index:1;
-    }
-
-    .gif-badge{
-      width:34px;
-      height:34px;
-      border-radius:11px;
-      display:grid;
-      place-items:center;
-      font-size:11px;
-      font-weight:1000;
-      background:linear-gradient(135deg,#3ce9ff,#0068ff);
-      box-shadow:0 0 22px rgba(38,196,255,.48);
-    }
-
-    .long-text strong{
-      display:block;
-      font-size:14px;
-    }
-
-    .long-text span{
-      display:block;
-      font-size:10px;
-      color:#a9d8ff;
-      margin-top:2px;
-    }
-
-    /* =====================================================
-       LOGIN / REGISTER
-       ===================================================== */
-
-    .auth-row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin:12px 0 18px;
-    }
-
-    .auth{
-      height:43px;
-      border-radius:13px;
-      border:1px solid var(--line);
-      display:grid;
-      place-items:center;
-      font-weight:900;
-      font-size:13px;
-      position:relative;
-      overflow:hidden;
-      transition:.2s transform,.2s box-shadow;
-    }
-
-    .auth:hover{
-      transform:translateY(-2px);
-    }
-
-    .auth.login{
-      background:linear-gradient(135deg,#008cff,#0051ff);
-      box-shadow:0 8px 28px rgba(0,103,255,.35);
-    }
-
-    .auth.register{
-      background:rgba(11,53,108,.8);
-      box-shadow:0 8px 28px rgba(0,103,255,.16);
-    }
-
-    .auth::after{
-      content:"";
-      position:absolute;
-      top:-40%;
-      left:-70%;
-      width:45%;
-      height:180%;
-      transform:skewX(-20deg);
-      background:rgba(255,255,255,.20);
-      animation:buttonShine 4.4s ease-in-out infinite;
-    }
-
-    /* =====================================================
-       TABS
-       ===================================================== */
-
-    .tabs{
-      display:flex;
-      gap:28px;
-      border-bottom:1px solid rgba(110,180,255,.12);
-      padding:0 16px;
-    }
-
-    .tab{
-      padding:12px 0 11px;
-      font-size:13px;
-      font-weight:900;
-      color:#7894b7;
-      position:relative;
-    }
-
-    .tab.active{
-      color:#fff;
-    }
-
-    .tab.active::after{
-      content:"";
-      position:absolute;
-      left:0;
-      right:0;
-      bottom:-1px;
-      height:3px;
-      border-radius:5px;
-      background:linear-gradient(90deg,#00d5ff,#0068ff);
-      box-shadow:0 0 12px rgba(0,181,255,.7);
-    }
-
-    /* =====================================================
-       VIDEO GRID
-       ===================================================== */
-
-    .feed{
-      padding:12px 10px 100px;
-    }
-
-    /* 2 ATAS + 2 BAWAH */
-    .video-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-      position:relative;
-    }
-
-    .video-card{
-      min-width:0;
-      position:relative;
-      border-radius:15px;
-      overflow:hidden;
-      background:linear-gradient(180deg,#0a3b7d,#061f48);
-      border:1px solid rgba(85,188,255,.20);
-      box-shadow:0 8px 25px rgba(0,0,0,.28);
-      animation:cardIn .65s both;
-      transition:
-        transform .45s cubic-bezier(.2,.8,.2,1),
-        opacity .35s ease,
-        box-shadow .45s ease,
-        grid-column .45s ease;
-    }
-
-    .video-card:nth-child(2){
-      animation-delay:.08s;
-    }
-
-    .video-card:nth-child(3){
-      animation-delay:.16s;
-    }
-
-    .video-card:nth-child(4){
-      animation-delay:.24s;
-    }
-
-    /* VIDEO YANG SEDANG FOKUS */
-    .video-card.focused{
-      grid-column:1 / -1;
-      z-index:20;
-      transform:scale(1.01);
-      box-shadow:
-        0 20px 60px rgba(0,0,0,.65),
-        0 0 0 1px rgba(40,190,255,.35),
-        0 0 40px rgba(0,110,255,.22);
-    }
-
-    /* VIDEO LAIN DIREDUPKAN */
-    .video-card.dimmed{
-      opacity:.28;
-      transform:scale(.97);
-      filter:blur(.3px);
-    }
-
-    .video-wrap{
-      position:relative;
-      aspect-ratio:1/1;
-      overflow:hidden;
-      background:#03142f;
-    }
-
-    .video-card.focused .video-wrap{
-      aspect-ratio:16/9;
-    }
-
-    video{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-      background:#03142f;
-      cursor:pointer;
-    }
-
-    /* Overlay gelap halus */
-    .video-wrap::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:
-        linear-gradient(
-          180deg,
-          rgba(0,0,0,.02),
-          rgba(0,0,0,.28)
-        );
-      pointer-events:none;
-      z-index:2;
-    }
-
-    /* =====================================================
-       PLAY BUTTON
-       ===================================================== */
-
-    .play-btn{
-      position:absolute;
-      z-index:8;
-      left:50%;
-      top:50%;
-      transform:translate(-50%,-50%);
-      width:58px;
-      height:58px;
-      border-radius:50%;
-      border:1px solid rgba(255,255,255,.72);
-      background:rgba(0,79,190,.58);
-      color:white;
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      box-shadow:
-        0 0 0 0 rgba(0,174,255,.45),
-        0 8px 25px rgba(0,0,0,.45);
-      transition:.3s;
-      backdrop-filter:blur(7px);
-      animation:playPulse 1.8s infinite;
-    }
-
-    .play-btn:hover{
-      transform:translate(-50%,-50%) scale(1.10);
-    }
-
-    .play-btn.hidden{
-      opacity:0;
-      pointer-events:none;
-      transform:translate(-50%,-50%) scale(.75);
-    }
-
-    .play-icon{
-      width:0;
-      height:0;
-      border-top:10px solid transparent;
-      border-bottom:10px solid transparent;
-      border-left:15px solid white;
-      margin-left:4px;
-    }
-
-    /* =====================================================
-       CLOSE FOCUS
-       ===================================================== */
-
-    .focus-close{
-      position:absolute;
-      z-index:15;
-      top:10px;
-      right:10px;
-      width:34px;
-      height:34px;
-      border:1px solid rgba(255,255,255,.30);
-      border-radius:50%;
-      background:rgba(0,0,0,.55);
-      color:#fff;
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      font-size:19px;
-      opacity:0;
-      pointer-events:none;
-      transition:.25s;
-      backdrop-filter:blur(8px);
-    }
-
-    .video-card.focused .focus-close{
-      opacity:1;
-      pointer-events:auto;
-    }
-
-    /* =====================================================
-       VIDEO CONTROLS
-       ===================================================== */
-
-    .video-controls{
-      position:absolute;
-      z-index:10;
-      left:0;
-      right:0;
-      bottom:0;
-      padding:35px 10px 9px;
-      background:
-        linear-gradient(
-          180deg,
-          transparent,
-          rgba(0,0,0,.82)
-        );
-      opacity:0;
-      transform:translateY(5px);
-      transition:.25s;
-      pointer-events:none;
-    }
-
-    .video-card.focused .video-controls,
-    .video-card:hover .video-controls{
-      opacity:1;
-      transform:translateY(0);
-      pointer-events:auto;
-    }
-
-    .progress-row{
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-
-    .time{
-      min-width:34px;
-      font-size:9px;
-      font-weight:800;
-      color:white;
-      text-align:center;
-    }
-
-    .progress{
-      flex:1;
-      height:4px;
-      appearance:none;
-      -webkit-appearance:none;
-      border-radius:10px;
-      background:rgba(255,255,255,.25);
-      outline:none;
-      cursor:pointer;
-    }
-
-    .progress::-webkit-slider-thumb{
-      appearance:none;
-      -webkit-appearance:none;
-      width:12px;
-      height:12px;
-      border-radius:50%;
-      background:#fff;
-      cursor:pointer;
-      box-shadow:0 0 10px rgba(0,174,255,.8);
-    }
-
-    .progress::-moz-range-thumb{
-      width:12px;
-      height:12px;
-      border-radius:50%;
-      background:#fff;
-      border:0;
-      cursor:pointer;
-    }
-
-    .control-row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-top:7px;
-    }
-
-    .control-left{
-      display:flex;
-      align-items:center;
-      gap:7px;
-    }
-
-    .control-btn{
-      min-width:30px;
-      height:28px;
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:8px;
-      background:rgba(0,0,0,.42);
-      color:#fff;
-      font-size:11px;
-      font-weight:900;
-      cursor:pointer;
-      display:grid;
-      place-items:center;
-      padding:0 8px;
-    }
-
-    .control-btn:hover{
-      background:rgba(0,126,255,.55);
-    }
-
-    .speed-btn{
-      min-width:44px;
-    }
-
-    /* =====================================================
-       GAME TAG
-       ===================================================== */
-
-    .game-tag{
-      position:absolute;
-      z-index:6;
-      left:7px;
-      top:7px;
-      max-width:calc(100% - 55px);
-      padding:5px 7px;
-      border-radius:8px;
-      background:rgba(0,19,50,.75);
-      border:1px solid rgba(105,211,255,.32);
-      font-size:8px;
-      font-weight:1000;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      backdrop-filter:blur(7px);
-    }
-
-    /* =====================================================
-       VIEWS
-       ===================================================== */
-
-    .views{
-      position:absolute;
-      z-index:6;
-      right:7px;
-      bottom:7px;
-      display:flex;
-      align-items:center;
-      gap:4px;
-      padding:4px 6px;
-      border-radius:8px;
-      background:rgba(0,0,0,.58);
-      font-size:8px;
-      font-weight:800;
-      transition:.25s;
-    }
-
-    .video-card.focused .views{
-      bottom:60px;
-    }
-
-    .live-dot{
-      width:5px;
-      height:5px;
-      border-radius:50%;
-      background:#35ff9b;
-      box-shadow:0 0 8px #35ff9b;
-    }
-
-    /* =====================================================
-       PLAY LINK
-       ===================================================== */
-
-    .play-area{
-      padding:7px;
-      background:
-        linear-gradient(
-          180deg,
-          rgba(4,38,83,.95),
-          rgba(3,21,49,.98)
-        );
-    }
-
-    .play-link{
-      width:100%;
-      min-height:32px;
-      border:0;
-      border-radius:9px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:5px;
-      font-size:10px;
-      font-weight:1000;
-      letter-spacing:.3px;
-      background:linear-gradient(135deg,#00b8ff,#0062ff);
-      box-shadow:0 5px 18px rgba(0,108,255,.30);
-      position:relative;
-      overflow:hidden;
-    }
-
-    .play-link::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      transform:translateX(-120%);
-      background:
-        linear-gradient(
-          90deg,
-          transparent,
-          rgba(255,255,255,.24),
-          transparent
-        );
-      animation:playShine 3.7s infinite;
-    }
-
-    /* =====================================================
-       BOTTOM NAV
-       ===================================================== */
-
-    .bottom-nav{
-      position:fixed;
-      z-index:40;
-      bottom:0;
-      left:50%;
-      transform:translateX(-50%);
-      width:min(100%,520px);
-      height:61px;
-      padding:
-        0
-        max(3px,env(safe-area-inset-left))
-        max(2px,env(safe-area-inset-bottom));
-      display:grid;
-      grid-template-columns:repeat(5,1fr);
-      gap:0;
-      background:
-        linear-gradient(
-          180deg,
-          rgba(7,39,69,.98),
-          rgba(3,22,43,.99)
-        );
-      border-top:1px solid rgba(111,203,255,.28);
-      box-shadow:0 -7px 24px rgba(0,0,0,.30);
-      backdrop-filter:blur(18px);
-    }
-
-    .nav-item{
-      position:relative;
-      color:#e8f5ff;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:3px;
-      font-size:8px;
-      font-weight:1000;
-      border-right:1px solid rgba(2,15,29,.75);
-      border-left:1px solid rgba(103,191,237,.08);
-      transition:.2s;
-      text-shadow:0 1px 3px rgba(0,0,0,.7);
-      overflow:hidden;
-    }
-
-    .nav-item::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:
-        linear-gradient(
-          180deg,
-          rgba(37,157,220,.13),
-          rgba(0,0,0,0)
-        );
-      opacity:0;
-      transition:.2s;
-    }
-
-    .nav-item:hover::before,
-    .nav-item.active::before{
-      opacity:1;
-    }
-
-    .nav-item .nav-icon{
-      position:relative;
-      z-index:1;
-      width:24px;
-      height:24px;
-      display:grid;
-      place-items:center;
-      font-size:18px;
-      line-height:1;
-      color:#fff;
-      filter:drop-shadow(0 1px 3px rgba(0,0,0,.7));
-    }
-
-    .nav-item span:last-child{
-      position:relative;
-      z-index:1;
-    }
-
-    .nav-item.active{
-      color:#fff;
-      background:rgba(12,105,158,.16);
-    }
-
-    .nav-item.active .nav-icon{
-      filter:drop-shadow(0 0 7px rgba(46,194,255,.75));
-    }
-
-    /* =====================================================
-       TOAST
-       ===================================================== */
-
-    .toast{
-      position:fixed;
-      z-index:100;
-      left:50%;
-      bottom:84px;
-      transform:translate(-50%,18px);
-      width:min(calc(100% - 30px),390px);
-      padding:13px 15px;
-      border-radius:14px;
-      background:rgba(2,18,42,.95);
-      border:1px solid rgba(73,191,255,.32);
-      box-shadow:0 18px 50px rgba(0,0,0,.4);
-      font-size:12px;
-      font-weight:800;
-      opacity:0;
-      pointer-events:none;
-      transition:.25s;
-      text-align:center;
-    }
-
-    .toast.show{
-      opacity:1;
-      transform:translate(-50%,0);
-    }
-
-    /* =====================================================
-       MODAL
-       ===================================================== */
-
-    .modal{
-      position:fixed;
-      z-index:90;
-      inset:0;
-      display:grid;
-      place-items:end center;
-      padding:18px;
-      background:rgba(0,6,18,.62);
-      backdrop-filter:blur(7px);
-      opacity:0;
-      pointer-events:none;
-      transition:.25s;
-    }
-
-    .modal.show{
-      opacity:1;
-      pointer-events:auto;
-    }
-
-    .modal-box{
-      width:min(100%,470px);
-      border-radius:24px 24px 16px 16px;
-      padding:20px;
-      background:linear-gradient(180deg,#082d63,#031630);
-      border:1px solid rgba(85,200,255,.28);
-      box-shadow:0 25px 80px rgba(0,0,0,.55);
-      transform:translateY(25px) scale(.97);
-      transition:.3s;
-    }
-
-    .modal.show .modal-box{
-      transform:translateY(0) scale(1);
-    }
-
-    .modal-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:10px;
-    }
-
-    .modal-title{
-      font-size:18px;
-      font-weight:1000;
-    }
-
-    .close{
-      background:none;
-      border:0;
-      color:#9bb8da;
-      font-size:24px;
-      cursor:pointer;
-    }
-
-    .modal-box p{
-      font-size:12px;
-      color:#a9c2df;
-      line-height:1.6;
-    }
-
-    .modal-btn{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      min-height:44px;
-      border-radius:13px;
-      margin-top:10px;
-      font-size:13px;
-      font-weight:1000;
-      background:linear-gradient(135deg,#00bfff,#0063ff);
-    }
-
-    /* =====================================================
-       ANIMATIONS
-       ===================================================== */
-
-    @keyframes shine{
-      0%{
-        transform:translateX(-170%) rotate(20deg);
-      }
-      100%{
-        transform:translateX(370%) rotate(20deg);
-      }
-    }
-
-    @keyframes buttonShine{
-      0%,55%{
-        left:-70%;
-      }
-      80%,100%{
-        left:140%;
-      }
-    }
-
-    @keyframes playShine{
-      0%,50%{
-        transform:translateX(-120%);
-      }
-      80%,100%{
-        transform:translateX(120%);
-      }
-    }
-
-    @keyframes floatPulse{
-      0%,100%{
-        transform:translateY(0);
-      }
-      50%{
-        transform:translateY(-2px);
-      }
-    }
-
-    @keyframes cardIn{
-      from{
-        opacity:0;
-        transform:translateY(14px) scale(.97);
-      }
-      to{
-        opacity:1;
-        transform:none;
-      }
-    }
-
-    @keyframes playPulse{
-      0%,100%{
-        box-shadow:
-          0 0 0 0 rgba(0,174,255,.40),
-          0 8px 25px rgba(0,0,0,.45);
-      }
-      50%{
-        box-shadow:
-          0 0 0 10px rgba(0,174,255,0),
-          0 8px 25px rgba(0,0,0,.45);
-      }
-    }
-
-    /* =====================================================
-       DESKTOP
-       ===================================================== */
-
-    @media (min-width:700px){
-
-      body{
-        padding:20px 0;
-      }
-
-      .app{
-        border-radius:28px;
-        min-height:calc(100vh - 40px);
-        overflow:hidden;
-      }
-
-      .topbar,
-      .bottom-nav{
-        width:min(100%,520px);
-      }
-
-      .topbar{
-        top:20px;
-        border-radius:28px 28px 0 0;
-      }
-
-      .bottom-nav{
-        bottom:20px;
-        border-radius:0 0 28px 28px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+
+<title>BluePlay — Video Profile</title>
+
+<style>
+:root{
+  --bg:#020817;
+  --bg2:#061a3a;
+  --blue:#18a8ff;
+  --blue2:#006cff;
+  --cyan:#51e8ff;
+  --text:#f5fbff;
+  --muted:#91a9c8;
+  --line:rgba(108,190,255,.20);
+  --shadow:0 18px 55px rgba(0,70,180,.30);
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 20% 0%,rgba(0,132,255,.22),transparent 30%),
+    radial-gradient(circle at 100% 35%,rgba(0,229,255,.13),transparent 27%),
+    linear-gradient(180deg,#020817 0%,#03142e 45%,#020817 100%);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100vh;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+button{
+  font:inherit;
+}
+
+/* =========================
+   APP
+========================= */
+
+.app{
+  width:min(100%,520px);
+  min-height:100vh;
+  margin:auto;
+  position:relative;
+  overflow:hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5,28,65,.76),
+      rgba(2,8,23,.97)
+    ),
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(24,168,255,.10),
+      transparent 35%
+    );
+
+  box-shadow:0 0 80px rgba(0,119,255,.12);
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar{
+  position:fixed;
+  z-index:50;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+
+  width:min(100%,520px);
+  height:56px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:8px 14px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(2,12,31,.92),
+      rgba(2,12,31,.45),
+      transparent
+    );
+
+  backdrop-filter:blur(10px);
+}
+
+.brand-dot{
+  width:36px;
+  height:36px;
+  border-radius:12px;
+
+  display:grid;
+  place-items:center;
+
+  font-weight:900;
+  font-size:14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--cyan),
+      var(--blue2)
+    );
+
+  box-shadow:
+    0 0 25px rgba(24,168,255,.45);
+}
+
+.top-actions{
+  display:flex;
+  gap:8px;
+}
+
+.icon-btn{
+  width:38px;
+  height:38px;
+
+  border:1px solid rgba(145,215,255,.22);
+  border-radius:12px;
+
+  background:rgba(4,25,57,.62);
+  color:white;
+
+  display:grid;
+  place-items:center;
+
+  cursor:pointer;
+
+  backdrop-filter:blur(10px);
+}
+
+/* =========================
+   COVER
+========================= */
+
+.cover{
+  aspect-ratio:16/9;
+  position:relative;
+  overflow:hidden;
+  background:#031936;
+}
+
+.cover img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.cover::after{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.04) 45%,
+      rgba(1,8,22,.82) 100%
+    );
+
+  pointer-events:none;
+}
+
+.cover-title{
+  position:absolute;
+  z-index:2;
+
+  left:16px;
+  right:16px;
+  bottom:13px;
+
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:.7px;
+
+  text-shadow:0 2px 14px #000;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile{
+  padding:0 16px 12px;
+  position:relative;
+}
+
+.avatar{
+  width:88px;
+  height:88px;
+
+  border-radius:50%;
+  border:4px solid #061a3a;
+
+  position:relative;
+
+  margin-top:-44px;
+
+  object-fit:cover;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0fd8ff,
+      #0756ff
+    );
+
+  box-shadow:
+    0 8px 28px rgba(0,0,0,.4),
+    0 0 0 1px rgba(110,210,255,.28);
+
+  z-index:4;
+}
+
+.online{
+  position:absolute;
+
+  left:80px;
+  top:30px;
+
+  width:15px;
+  height:15px;
+
+  border-radius:50%;
+
+  background:#24ff8a;
+  border:3px solid #061a3a;
+
+  box-shadow:0 0 15px #24ff8a;
+}
+
+.name-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  margin-top:8px;
+}
+
+.name{
+  font-size:21px;
+  font-weight:900;
+}
+
+.verified{
+  width:19px;
+  height:19px;
+
+  border-radius:50%;
+
+  display:grid;
+  place-items:center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #36ddff,
+      #0074ff
+    );
+
+  font-size:11px;
+  font-weight:900;
+}
+
+.username{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:2px;
+}
+
+.stats{
+  display:flex;
+  gap:17px;
+
+  font-size:12px;
+  font-weight:800;
+
+  margin:12px 0;
+}
+
+.stats span{
+  color:#dceeff;
+}
+
+.stats small{
+  color:var(--muted);
+  font-weight:600;
+}
+
+/* =========================
+   LONG MENU
+========================= */
+
+.long-menu{
+  position:relative;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  width:100%;
+  min-height:54px;
+
+  border:1px solid rgba(83,201,255,.30);
+  border-radius:17px;
+
+  background:
+    linear-gradient(
+      100deg,
+      rgba(0,92,255,.25),
+      rgba(0,214,255,.13)
+    ),
+    rgba(3,25,58,.75);
+
+  box-shadow:var(--shadow);
+
+  overflow:hidden;
+
+  animation:floatPulse 2.8s ease-in-out infinite;
+}
+
+.long-menu::before{
+  content:"";
+
+  position:absolute;
+  inset:-100% 30%;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.18),
+      transparent
+    );
+
+  transform:rotate(20deg);
+
+  animation:shine 3.5s linear infinite;
+}
+
+.long-menu .content{
+  position:relative;
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  z-index:1;
+}
+
+.gif-badge{
+  width:34px;
+  height:34px;
+
+  border-radius:11px;
+
+  display:grid;
+  place-items:center;
+
+  font-size:11px;
+  font-weight:1000;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3ce9ff,
+      #0068ff
+    );
+
+  box-shadow:
+    0 0 22px rgba(38,196,255,.48);
+}
+
+.long-text strong{
+  display:block;
+  font-size:14px;
+}
+
+.long-text span{
+  display:block;
+
+  font-size:10px;
+
+  color:#a9d8ff;
+
+  margin-top:2px;
+}
+
+/* =========================
+   AUTH
+========================= */
+
+.auth-row{
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:10px;
+
+  margin:12px 0 18px;
+}
+
+.auth{
+  height:43px;
+
+  border-radius:13px;
+
+  border:1px solid var(--line);
+
+  display:grid;
+  place-items:center;
+
+  font-weight:900;
+  font-size:13px;
+
+  position:relative;
+  overflow:hidden;
+
+  transition:.2s;
+}
+
+.auth:hover{
+  transform:translateY(-2px);
+}
+
+.auth.login{
+  background:
+    linear-gradient(
+      135deg,
+      #008cff,
+      #0051ff
+    );
+
+  box-shadow:
+    0 8px 28px rgba(0,103,255,.35);
+}
+
+.auth.register{
+  background:rgba(11,53,108,.8);
+
+  box-shadow:
+    0 8px 28px rgba(0,103,255,.16);
+}
+
+/* =========================
+   TABS
+========================= */
+
+.tabs{
+  display:flex;
+  gap:28px;
+
+  border-bottom:1px solid rgba(110,180,255,.12);
+
+  padding:0 16px;
+}
+
+.tab{
+  padding:12px 0 11px;
+
+  font-size:13px;
+  font-weight:900;
+
+  color:#7894b7;
+
+  position:relative;
+}
+
+.tab.active{
+  color:#fff;
+}
+
+.tab.active::after{
+  content:"";
+
+  position:absolute;
+
+  left:0;
+  right:0;
+  bottom:-1px;
+
+  height:3px;
+
+  border-radius:5px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #00d5ff,
+      #0068ff
+    );
+
+  box-shadow:
+    0 0 12px rgba(0,181,255,.7);
+}
+
+/* =========================
+   VIDEO GRID
+========================= */
+
+.feed{
+  padding:12px 10px 100px;
+}
+
+/*
+   2 VIDEO ATAS
+   2 VIDEO BAWAH
+*/
+
+.video-grid{
+  display:grid;
+
+  grid-template-columns:repeat(2,1fr);
+
+  gap:10px;
+}
+
+/* =========================
+   VIDEO CARD
+========================= */
+
+.video-card{
+  min-width:0;
+
+  position:relative;
+
+  border-radius:14px;
+
+  overflow:hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      #0a3b7d,
+      #061f48
+    );
+
+  border:1px solid rgba(85,188,255,.20);
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.28);
+
+  animation:cardIn .65s both;
+}
+
+.video-card:nth-child(2){
+  animation-delay:.08s;
+}
+
+.video-card:nth-child(3){
+  animation-delay:.16s;
+}
+
+.video-card:nth-child(4){
+  animation-delay:.24s;
+}
+
+/* =========================
+   VIDEO WRAP
+========================= */
+
+.video-wrap{
+  position:relative;
+
+  /*
+     SELALU 1:1
+  */
+  aspect-ratio:1/1;
+
+  overflow:hidden;
+
+  background:#03142f;
+
+  cursor:pointer;
+}
+
+video{
+  width:100%;
+  height:100%;
+
+  /*
+     TIDAK TERPOTONG
+  */
+  object-fit:contain;
+
+  display:block;
+
+  background:#000;
+
+  outline:none;
+}
+
+/*
+   Tidak ada poster.
+*/
+
+/* =========================
+   PLAY BUTTON
+========================= */
+
+.play-btn{
+  position:absolute;
+
+  z-index:5;
+
+  left:50%;
+  top:50%;
+
+  transform:
+    translate(-50%,-50%);
+
+  width:56px;
+  height:56px;
+
+  border-radius:50%;
+
+  border:1px solid rgba(255,255,255,.55);
+
+  /*
+     TRANSPARAN
+  */
+
+  background:rgba(255,255,255,.08);
+
+  color:white;
+
+  display:grid;
+  place-items:center;
+
+  cursor:pointer;
+
+  box-shadow:
+    0 0 0 7px rgba(0,132,255,.10),
+    0 8px 25px rgba(0,0,0,.38);
+
+  backdrop-filter:blur(4px);
+
+  transition:.25s;
+}
+
+.play-btn:hover{
+  transform:
+    translate(-50%,-50%)
+    scale(1.08);
+}
+
+.play-btn.hidden{
+  opacity:0;
+  pointer-events:none;
+}
+
+.play-icon{
+  width:0;
+  height:0;
+
+  border-top:9px solid transparent;
+  border-bottom:9px solid transparent;
+
+  border-left:14px solid white;
+
+  margin-left:3px;
+}
+
+/* =========================
+   GAME TAG
+========================= */
+
+.game-tag{
+  position:absolute;
+
+  z-index:6;
+
+  left:7px;
+  top:7px;
+
+  max-width:calc(100% - 14px);
+
+  padding:5px 7px;
+
+  border-radius:8px;
+
+  background:rgba(0,19,50,.75);
+
+  border:1px solid rgba(105,211,255,.32);
+
+  font-size:8px;
+  font-weight:1000;
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+
+  backdrop-filter:blur(7px);
+}
+
+/* =========================
+   VIEWS
+========================= */
+
+.views{
+  position:absolute;
+
+  z-index:6;
+
+  right:7px;
+  bottom:7px;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:4px;
+
+  padding:4px 6px;
+
+  border-radius:8px;
+
+  background:rgba(0,0,0,.58);
+
+  font-size:8px;
+  font-weight:800;
+}
+
+.live-dot{
+  width:5px;
+  height:5px;
+
+  border-radius:50%;
+
+  background:#35ff9b;
+
+  box-shadow:
+    0 0 8px #35ff9b;
+}
+
+/* =========================
+   PLAY AREA
+========================= */
+
+.play-area{
+  padding:7px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(4,38,83,.95),
+      rgba(3,21,49,.98)
+    );
+}
+
+.play-link{
+  width:100%;
+
+  min-height:30px;
+
+  border:0;
+
+  border-radius:9px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  gap:5px;
+
+  font-size:10px;
+  font-weight:1000;
+
+  letter-spacing:.3px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #00b8ff,
+      #0062ff
+    );
+
+  box-shadow:
+    0 5px 18px rgba(0,108,255,.30);
+}
+
+/* =========================
+   FOCUS OVERLAY
+========================= */
+
+.focus-overlay{
+  position:fixed;
+
+  inset:0;
+
+  z-index:200;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  padding:16px;
+
+  background:
+    rgba(0,4,15,.88);
+
+  backdrop-filter:blur(12px);
+
+  opacity:0;
+
+  visibility:hidden;
+
+  pointer-events:none;
+
+  transition:
+    opacity .28s ease,
+    visibility .28s ease;
+}
+
+.focus-overlay.show{
+  opacity:1;
+
+  visibility:visible;
+
+  pointer-events:auto;
+}
+
+/*
+   FOCUS VIDEO
+*/
+
+.focus-container{
+  width:min(
+    92vw,
+    520px
+  );
+
+  /*
+     Tetap 1:1
+  */
+
+  aspect-ratio:1/1;
+
+  position:relative;
+
+  border-radius:20px;
+
+  overflow:hidden;
+
+  background:#000;
+
+  box-shadow:
+    0 30px 100px rgba(0,0,0,.65),
+    0 0 45px rgba(0,132,255,.20);
+
+  transform:
+    scale(.82);
+
+  opacity:0;
+
+  transition:
+    transform .35s cubic-bezier(.2,.8,.2,1),
+    opacity .25s ease;
+}
+
+.focus-overlay.show .focus-container{
+  transform:scale(1);
+  opacity:1;
+}
+
+.focus-container video{
+  width:100%;
+  height:100%;
+
+  /*
+     WAJIB 1:1
+     DAN TIDAK TERPOTONG
+  */
+
+  object-fit:contain;
+
+  background:#000;
+
+  display:block;
+}
+
+/*
+   TOMBOL CLOSE SAJA
+*/
+
+.focus-close{
+  position:absolute;
+
+  z-index:20;
+
+  right:12px;
+  top:12px;
+
+  width:38px;
+  height:38px;
+
+  border:1px solid rgba(255,255,255,.25);
+
+  border-radius:50%;
+
+  background:rgba(0,0,0,.45);
+
+  color:white;
+
+  font-size:22px;
+
+  display:grid;
+  place-items:center;
+
+  cursor:pointer;
+
+  backdrop-filter:blur(8px);
+}
+
+/*
+   Tidak ada:
+   - Play button
+   - Pause button
+   - Progress bar
+   - Durasi
+   - Speed button
+*/
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
+.bottom-nav{
+  position:fixed;
+
+  z-index:40;
+
+  bottom:0;
+  left:50%;
+
+  transform:translateX(-50%);
+
+  width:min(100%,520px);
+
+  height:61px;
+
+  padding:
+    0
+    max(3px,env(safe-area-inset-left))
+    max(2px,env(safe-area-inset-bottom));
+
+  display:grid;
+
+  grid-template-columns:repeat(5,1fr);
+
+  gap:0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(7,39,69,.98),
+      rgba(3,22,43,.99)
+    );
+
+  border-top:
+    1px solid rgba(111,203,255,.28);
+
+  box-shadow:
+    0 -7px 24px rgba(0,0,0,.30);
+
+  backdrop-filter:blur(18px);
+}
+
+.nav-item{
+  position:relative;
+
+  color:#e8f5ff;
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+  justify-content:center;
+
+  gap:3px;
+
+  font-size:8px;
+  font-weight:1000;
+
+  border-right:
+    1px solid rgba(2,15,29,.75);
+
+  border-left:
+    1px solid rgba(103,191,237,.08);
+
+  transition:.2s;
+
+  text-shadow:
+    0 1px 3px rgba(0,0,0,.7);
+
+  overflow:hidden;
+}
+
+.nav-item .nav-icon{
+  position:relative;
+
+  z-index:1;
+
+  width:24px;
+  height:24px;
+
+  display:grid;
+  place-items:center;
+
+  font-size:18px;
+
+  color:#fff;
+}
+
+.nav-item span:last-child{
+  position:relative;
+  z-index:1;
+}
+
+.nav-item.active{
+  color:#fff;
+
+  background:
+    rgba(12,105,158,.16);
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast{
+  position:fixed;
+
+  z-index:300;
+
+  left:50%;
+  bottom:84px;
+
+  transform:
+    translate(-50%,18px);
+
+  width:min(
+    calc(100% - 30px),
+    390px
+  );
+
+  padding:13px 15px;
+
+  border-radius:14px;
+
+  background:
+    rgba(2,18,42,.95);
+
+  border:
+    1px solid rgba(73,191,255,.32);
+
+  box-shadow:
+    0 18px 50px rgba(0,0,0,.4);
+
+  font-size:12px;
+  font-weight:800;
+
+  opacity:0;
+
+  pointer-events:none;
+
+  transition:.25s;
+
+  text-align:center;
+}
+
+.toast.show{
+  opacity:1;
+
+  transform:
+    translate(-50%,0);
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+  position:fixed;
+
+  z-index:90;
+
+  inset:0;
+
+  display:grid;
+
+  place-items:end center;
+
+  padding:18px;
+
+  background:
+    rgba(0,6,18,.62);
+
+  backdrop-filter:blur(7px);
+
+  opacity:0;
+
+  pointer-events:none;
+
+  transition:.25s;
+}
+
+.modal.show{
+  opacity:1;
+
+  pointer-events:auto;
+}
+
+.modal-box{
+  width:min(100%,470px);
+
+  border-radius:
+    24px
+    24px
+    16px
+    16px;
+
+  padding:20px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #082d63,
+      #031630
+    );
+
+  border:
+    1px solid rgba(85,200,255,.28);
+
+  box-shadow:
+    0 25px 80px rgba(0,0,0,.55);
+
+  transform:
+    translateY(25px)
+    scale(.97);
+
+  transition:.3s;
+}
+
+.modal.show .modal-box{
+  transform:
+    translateY(0)
+    scale(1);
+}
+
+.modal-head{
+  display:flex;
+
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:10px;
+}
+
+.modal-title{
+  font-size:18px;
+  font-weight:1000;
+}
+
+.close{
+  background:none;
+  border:0;
+
+  color:#9bb8da;
+
+  font-size:24px;
+
+  cursor:pointer;
+}
+
+.modal-box p{
+  font-size:12px;
+
+  color:#a9c2df;
+
+  line-height:1.6;
+}
+
+.modal-btn{
+  display:flex;
+
+  justify-content:center;
+  align-items:center;
+
+  min-height:44px;
+
+  border-radius:13px;
+
+  margin-top:10px;
+
+  font-size:13px;
+  font-weight:1000;
+
+  background:
+    linear-gradient(
+      135deg,
+      #00bfff,
+      #0063ff
+    );
+}
+
+/* =========================
+   ANIMATION
+========================= */
+
+@keyframes shine{
+  0%{
+    transform:
+      translateX(-170%)
+      rotate(20deg);
+  }
+
+  100%{
+    transform:
+      translateX(370%)
+      rotate(20deg);
+  }
+}
+
+@keyframes floatPulse{
+  0%,100%{
+    transform:translateY(0);
+  }
+
+  50%{
+    transform:translateY(-2px);
+  }
+}
+
+@keyframes cardIn{
+  from{
+    opacity:0;
+
+    transform:
+      translateY(14px)
+      scale(.97);
+  }
+
+  to{
+    opacity:1;
+
+    transform:none;
+  }
+}
+
+/* =========================
+   DESKTOP
+========================= */
+
+@media (min-width:700px){
+
+  body{
+    padding:20px 0;
+  }
+
+  .app{
+    border-radius:28px;
+
+    min-height:
+      calc(100vh - 40px);
+
+    overflow:hidden;
+  }
+
+  .topbar,
+  .bottom-nav{
+    width:min(100%,520px);
+  }
+
+  .topbar{
+    top:20px;
+
+    border-radius:
+      28px
+      28px
+      0
+      0;
+  }
+
+  .bottom-nav{
+    bottom:20px;
+
+    border-radius:
+      0
+      0
+      28px
+      28px;
+  }
+}
+</style>
 </head>
 
 <body>
@@ -1091,6 +1324,7 @@
 <main class="app" id="home">
 
   <!-- TOP BAR -->
+
   <header class="topbar">
 
     <div class="brand-dot">
@@ -1119,12 +1353,12 @@
 
 
   <!-- COVER -->
+
   <section class="cover">
 
     <img
       id="coverImage"
-      alt="Sampul profil"
-    />
+      alt="Sampul profil">
 
     <div
       class="cover-title"
@@ -1135,13 +1369,13 @@
 
 
   <!-- PROFILE -->
+
   <section class="profile">
 
     <img
       class="avatar"
       id="profileImage"
-      alt="Foto profil"
-    />
+      alt="Foto profil">
 
     <span
       class="online"
@@ -1184,7 +1418,6 @@
     </div>
 
 
-    <!-- MENU -->
     <a
       class="long-menu"
       id="longMenu"
@@ -1216,7 +1449,6 @@
     </a>
 
 
-    <!-- LOGIN REGISTER -->
     <div class="auth-row">
 
       <a
@@ -1241,6 +1473,7 @@
 
 
   <!-- TABS -->
+
   <div class="tabs">
 
     <div class="tab active">
@@ -1255,6 +1488,7 @@
 
 
   <!-- VIDEO -->
+
   <section class="feed">
 
     <div
@@ -1267,7 +1501,41 @@
 </main>
 
 
-<!-- BOTTOM NAV -->
+<!-- =========================
+     FOCUS VIDEO
+========================= -->
+
+<div
+  class="focus-overlay"
+  id="focusOverlay">
+
+  <div
+    class="focus-container"
+    id="focusContainer">
+
+    <button
+      class="focus-close"
+      id="focusClose"
+      aria-label="Tutup">
+      ×
+    </button>
+
+    <video
+      id="focusVideo"
+      playsinline
+      webkit-playsinline
+      preload="metadata">
+    </video>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     BOTTOM NAV
+========================= -->
+
 <nav class="bottom-nav">
 
   <a
@@ -1276,8 +1544,7 @@
     href="#home">
 
     <span
-      class="nav-icon"
-      aria-hidden="true">
+      class="nav-icon">
       ⌂
     </span>
 
@@ -1295,8 +1562,7 @@
     rel="noopener">
 
     <span
-      class="nav-icon"
-      aria-hidden="true">
+      class="nav-icon">
       ▰
     </span>
 
@@ -1314,8 +1580,7 @@
     rel="noopener">
 
     <span
-      class="nav-icon"
-      aria-hidden="true">
+      class="nav-icon">
       🏆
     </span>
 
@@ -1333,8 +1598,7 @@
     rel="noopener">
 
     <span
-      class="nav-icon"
-      aria-hidden="true">
+      class="nav-icon">
       ➤
     </span>
 
@@ -1350,8 +1614,7 @@
     id="navLivechat">
 
     <span
-      class="nav-icon"
-      aria-hidden="true">
+      class="nav-icon">
       ▰
     </span>
 
@@ -1365,6 +1628,7 @@
 
 
 <!-- TOAST -->
+
 <div
   class="toast"
   id="toast">
@@ -1372,6 +1636,7 @@
 
 
 <!-- MODAL -->
+
 <div
   class="modal"
   id="modal">
@@ -1394,9 +1659,11 @@
 
     </div>
 
+
     <p id="modalText">
       Selamat datang. Silakan pilih menu untuk melanjutkan.
     </p>
+
 
     <a
       class="modal-btn"
@@ -1425,7 +1692,8 @@ const CONFIG = {
 
     username: "@benihtoto_gacor",
 
-    coverTitle: "VIDEO TERBARU • BLUEPLAY",
+    coverTitle:
+      "VIDEO TERBARU • BLUEPLAY",
 
     coverImage:
       "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1920&q=90",
@@ -1462,66 +1730,78 @@ const CONFIG = {
   },
 
 
-  /* =======================================================
-     4 VIDEO SAJA
-     2 ATAS + 2 BAWAH
-     ======================================================= */
+  /*
+     ==============================================
+     VIDEO
+     ==============================================
+
+     CUKUP GANTI BAGIAN:
+
+     video: "LINK-VIDEO-MP4"
+
+     TIDAK ADA POSTER LAGI.
+     ==============================================
+  */
 
   videos: [
 
     {
-      game: "GAME 01 • POLA TERBARU",
+      game:
+        "GAME 01 • POLA TERBARU",
 
-      /* MASUKKAN LINK VIDEO MP4 DI SINI */
       video:
         "https://www.image2url.com/r2/default/videos/1786694627950-68a2f532-638d-4209-9506-c330718ec062.mp4",
 
       playUrl:
         "https://example.com/game-01",
 
-      startViews: 1284
+      startViews:
+        1284
     },
 
 
     {
-      game: "GAME 02 • PREDIKSI",
+      game:
+        "GAME 02 • PREDIKSI",
 
-      /* MASUKKAN LINK VIDEO MP4 DI SINI */
       video:
         "https://www.image2url.com/r2/default/videos/1786694627950-68a2f532-638d-4209-9506-c330718ec062.mp4",
 
       playUrl:
         "https://example.com/game-02",
 
-      startViews: 863
+      startViews:
+        863
     },
 
 
     {
-      game: "GAME 03 • SCATTER",
+      game:
+        "GAME 03 • SCATTER",
 
-      /* MASUKKAN LINK VIDEO MP4 DI SINI */
       video:
         "https://www.image2url.com/r2/default/videos/1786694627950-68a2f532-638d-4209-9506-c330718ec062.mp4",
 
       playUrl:
-        "https://capital4.benihtotopro.one/",
+        "https://example.com/game-03",
 
-      startViews: 2147
+      startViews:
+        2147
     },
 
 
     {
-      game: "GAME 04 • BONUS",
+      game:
+        "GAME 04 • BONUS",
 
-      /* MASUKKAN LINK VIDEO MP4 DI SINI */
       video:
         "https://www.image2url.com/r2/default/videos/1786694627950-68a2f532-638d-4209-9506-c330718ec062.mp4",
 
       playUrl:
         "https://example.com/game-04",
 
-      startViews: 1520
+      startViews:
+        3250
     }
 
   ]
@@ -1531,15 +1811,13 @@ const CONFIG = {
 
 /* =========================================================
    SISTEM
-   ========================================================= */
+========================================================= */
 
-const $ = (id) =>
+const $ = id =>
   document.getElementById(id);
 
 
-/* =========================================================
-   PROFILE
-   ========================================================= */
+/* PROFILE */
 
 $("coverImage").src =
   CONFIG.profile.coverImage;
@@ -1557,9 +1835,7 @@ $("coverTitle").textContent =
   CONFIG.profile.coverTitle;
 
 
-/* =========================================================
-   LINK
-   ========================================================= */
+/* LINKS */
 
 $("longMenu").href =
   CONFIG.links.menuPanjang;
@@ -1582,14 +1858,22 @@ $("navTelegram").href =
 
 /* =========================================================
    VIDEO SYSTEM
-   ========================================================= */
+========================================================= */
 
 const grid =
   $("videoGrid");
 
-const videoElements = [];
+const videoElements =
+  [];
 
-let activeCard = null;
+let currentVideo =
+  null;
+
+let currentCard =
+  null;
+
+let currentIndex =
+  -1;
 
 
 /* FORMAT VIEW */
@@ -1607,32 +1891,13 @@ function formatViews(n){
 }
 
 
-/* FORMAT DURASI */
-
-function formatTime(seconds){
-
-  if(!Number.isFinite(seconds))
-    return "0:00";
-
-  const minutes =
-    Math.floor(seconds / 60);
-
-  const secs =
-    Math.floor(seconds % 60)
-      .toString()
-      .padStart(2,"0");
-
-  return `${minutes}:${secs}`;
-
-}
-
-
 /* =========================================================
-   MEMBUAT 4 VIDEO
-   ========================================================= */
+   BUAT VIDEO CARD
+========================================================= */
 
-CONFIG.videos.slice(0,4).forEach(
-  (item,index) => {
+CONFIG.videos
+.slice(0,4)
+.forEach((item,index)=>{
 
   const card =
     document.createElement("article");
@@ -1668,16 +1933,6 @@ CONFIG.videos.slice(0,4).forEach(
       </button>
 
 
-      <button
-        class="focus-close"
-        type="button"
-        aria-label="Tutup">
-
-        ×
-
-      </button>
-
-
       <div class="views">
 
         <span class="live-dot"></span>
@@ -1685,63 +1940,6 @@ CONFIG.videos.slice(0,4).forEach(
         <span class="view-number">
           ${formatViews(item.startViews)}
         </span>
-
-      </div>
-
-
-      <!-- VIDEO CONTROLS -->
-
-      <div class="video-controls">
-
-        <div class="progress-row">
-
-          <span
-            class="time current-time">
-            0:00
-          </span>
-
-          <input
-            class="progress"
-            type="range"
-            min="0"
-            max="100"
-            value="0"
-            step="0.1">
-
-          <span
-            class="time duration">
-            0:00
-          </span>
-
-        </div>
-
-
-        <div class="control-row">
-
-          <div class="control-left">
-
-            <button
-              class="control-btn pause-control"
-              type="button">
-              ▶
-            </button>
-
-            <button
-              class="control-btn speed-btn"
-              type="button">
-              1x
-            </button>
-
-          </div>
-
-
-          <button
-            class="control-btn fullscreen-btn"
-            type="button">
-            ⛶
-          </button>
-
-        </div>
 
       </div>
 
@@ -1768,34 +1966,14 @@ CONFIG.videos.slice(0,4).forEach(
   grid.appendChild(card);
 
 
-  /* ELEMENT VIDEO */
-
   const video =
     card.querySelector("video");
 
   const playBtn =
     card.querySelector(".play-btn");
 
-  const closeBtn =
-    card.querySelector(".focus-close");
-
-  const pauseBtn =
-    card.querySelector(".pause-control");
-
-  const speedBtn =
-    card.querySelector(".speed-btn");
-
-  const fullscreenBtn =
-    card.querySelector(".fullscreen-btn");
-
-  const progress =
-    card.querySelector(".progress");
-
-  const currentTime =
-    card.querySelector(".current-time");
-
-  const duration =
-    card.querySelector(".duration");
+  const videoWrap =
+    card.querySelector(".video-wrap");
 
   const viewNumber =
     card.querySelector(".view-number");
@@ -1807,423 +1985,107 @@ CONFIG.videos.slice(0,4).forEach(
   let views =
     item.startViews;
 
-  let speedIndex =
-    0;
 
-  const speeds =
-    [1,1.25,1.5,2];
-
-
-  /* =======================================================
-     FUNGSI FOCUS
-     ======================================================= */
-
-  function focusVideo(){
-
-    /* Pause semua video lain */
-
-    videoElements.forEach(
-      (other,otherIndex) => {
-
-        if(otherIndex !== index){
-
-          other.pause();
-
-          const otherCard =
-            grid.children[otherIndex];
-
-          otherCard.classList.remove(
-            "focused"
-          );
-
-          otherCard.classList.add(
-            "dimmed"
-          );
-
-          const otherBtn =
-            otherCard.querySelector(
-              ".play-btn"
-            );
-
-          otherBtn.classList.remove(
-            "hidden"
-          );
-
-        }
-
-      }
-    );
-
-
-    /* Bersihkan dimmed */
-
-    [...grid.children].forEach(
-      c => {
-
-        if(c !== card){
-
-          c.classList.add("dimmed");
-
-        }
-
-      }
-    );
-
-
-    card.classList.remove(
-      "dimmed"
-    );
-
-    card.classList.add(
-      "focused"
-    );
-
-    activeCard =
-      card;
-
-
-    /* Scroll ke video */
-
-    setTimeout(() => {
-
-      card.scrollIntoView({
-        behavior:"smooth",
-        block:"center"
-      });
-
-    },100);
-
-  }
-
-
-  /* =======================================================
-     KELUAR FOCUS
-     ======================================================= */
-
-  function closeFocus(){
-
-    video.pause();
-
-    card.classList.remove(
-      "focused"
-    );
-
-    [...grid.children].forEach(
-      c => {
-
-        c.classList.remove(
-          "dimmed"
-        );
-
-      }
-    );
-
-
-    playBtn.classList.remove(
-      "hidden"
-    );
-
-    activeCard =
-      null;
-
-  }
-
-
-  /* =======================================================
-     PLAY BUTTON
-     ======================================================= */
+  /* =============================================
+     KLIK TOMBOL PLAY
+  ============================================= */
 
   playBtn.addEventListener(
     "click",
-    async () => {
-
-      focusVideo();
-
-      try{
-
-        await video.play();
-
-        playBtn.classList.add(
-          "hidden"
-        );
-
-        pauseBtn.textContent =
-          "⏸";
-
-        views++;
-
-        viewNumber.textContent =
-          formatViews(views);
-
-      }catch(err){
-
-        showToast(
-          "Video tidak dapat diputar. Pastikan link adalah MP4/WebM langsung."
-        );
-
-      }
-
-    }
-  );
-
-
-  /* =======================================================
-     KLIK VIDEO
-     ======================================================= */
-
-  video.addEventListener(
-    "click",
-    () => {
-
-      if(!card.classList.contains("focused")){
-
-        focusVideo();
-
-      }
-
-
-      if(video.paused){
-
-        video.play();
-
-      }else{
-
-        video.pause();
-
-      }
-
-    }
-  );
-
-
-  /* =======================================================
-     PLAY EVENT
-     ======================================================= */
-
-  video.addEventListener(
-    "play",
-    () => {
-
-      focusVideo();
-
-      playBtn.classList.add(
-        "hidden"
-      );
-
-      pauseBtn.textContent =
-        "⏸";
-
-    }
-  );
-
-
-  /* =======================================================
-     PAUSE EVENT
-     ======================================================= */
-
-  video.addEventListener(
-    "pause",
-    () => {
-
-      playBtn.classList.remove(
-        "hidden"
-      );
-
-      pauseBtn.textContent =
-        "▶";
-
-    }
-  );
-
-
-  /* =======================================================
-     SELESAI
-     ======================================================= */
-
-  video.addEventListener(
-    "ended",
-    () => {
-
-      playBtn.classList.remove(
-        "hidden"
-      );
-
-      pauseBtn.textContent =
-        "▶";
-
-      progress.value =
-        0;
-
-      currentTime.textContent =
-        "0:00";
-
-    }
-  );
-
-
-  /* =======================================================
-     METADATA / DURASI
-     ======================================================= */
-
-  video.addEventListener(
-    "loadedmetadata",
-    () => {
-
-      duration.textContent =
-        formatTime(video.duration);
-
-    }
-  );
-
-
-  /* =======================================================
-     UPDATE PROGRESS
-     ======================================================= */
-
-  video.addEventListener(
-    "timeupdate",
-    () => {
-
-      if(!video.duration)
-        return;
-
-      progress.value =
-        (video.currentTime /
-          video.duration) * 100;
-
-      currentTime.textContent =
-        formatTime(
-          video.currentTime
-        );
-
-    }
-  );
-
-
-  /* =======================================================
-     SEEK / PERCEPAT DURASI
-     ======================================================= */
-
-  progress.addEventListener(
-    "input",
-    () => {
-
-      if(!video.duration)
-        return;
-
-      video.currentTime =
-        (progress.value / 100) *
-        video.duration;
-
-    }
-  );
-
-
-  /* =======================================================
-     PAUSE / PLAY CONTROL
-     ======================================================= */
-
-  pauseBtn.addEventListener(
-    "click",
-    () => {
-
-      focusVideo();
-
-      if(video.paused){
-
-        video.play();
-
-      }else{
-
-        video.pause();
-
-      }
-
-    }
-  );
-
-
-  /* =======================================================
-     KECEPATAN VIDEO
-     ======================================================= */
-
-  speedBtn.addEventListener(
-    "click",
-    () => {
-
-      speedIndex++;
-
-      if(
-        speedIndex >=
-        speeds.length
-      ){
-
-        speedIndex = 0;
-
-      }
-
-
-      const speed =
-        speeds[speedIndex];
-
-      video.playbackRate =
-        speed;
-
-      speedBtn.textContent =
-        speed + "x";
-
-    }
-  );
-
-
-  /* =======================================================
-     FULLSCREEN
-     ======================================================= */
-
-  fullscreenBtn.addEventListener(
-    "click",
-    async () => {
-
-      try{
-
-        if(
-          document.fullscreenElement
-        ){
-
-          await document.exitFullscreen();
-
-        }else if(
-          video.requestFullscreen
-        ){
-
-          await video.requestFullscreen();
-
-        }else{
-
-          showToast(
-            "Fullscreen tidak didukung browser ini."
-          );
-
-        }
-
-      }catch(err){}
-
-    }
-  );
-
-
-  /* =======================================================
-     CLOSE FOCUS
-     ======================================================= */
-
-  closeBtn.addEventListener(
-    "click",
-    (e) => {
+    e=>{
 
       e.stopPropagation();
 
-      closeFocus();
+      openFocus(
+        video,
+        card,
+        index
+      );
 
+    }
+  );
+
+
+  /* =============================================
+     KLIK VIDEO
+  ============================================= */
+
+  videoWrap.addEventListener(
+    "click",
+    ()=>{
+
+      openFocus(
+        video,
+        card,
+        index
+      );
+
+    }
+  );
+
+
+  /* =============================================
+     VIDEO PLAY
+  ============================================= */
+
+  video.addEventListener(
+    "play",
+    ()=>{
+
+      videoElements.forEach(
+        (other,otherIndex)=>{
+
+          if(
+            otherIndex !== index
+          ){
+
+            other.pause();
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+
+  /* =============================================
+     SELESAI
+  ============================================= */
+
+  video.addEventListener(
+    "ended",
+    ()=>{
+
+      if(
+        currentVideo === video
+      ){
+
+        video.currentTime = 0;
+
+      }
+
+    }
+  );
+
+
+  /* =============================================
+     VIEW COUNTER
+  ============================================= */
+
+  video.addEventListener(
+    "play",
+    ()=>{
+
+      views++;
+
+      viewNumber.textContent =
+        formatViews(views);
+
+    },
+    {
+      once:true
     }
   );
 
@@ -2231,21 +2093,283 @@ CONFIG.videos.slice(0,4).forEach(
 
 
 /* =========================================================
-   KLIK AREA KOSONG
-   ========================================================= */
+   FOCUS ELEMENT
+========================================================= */
+
+const focusOverlay =
+  $("focusOverlay");
+
+const focusVideo =
+  $("focusVideo");
+
+const focusClose =
+  $("focusClose");
+
+
+/* =========================================================
+   BUKA VIDEO FOKUS
+========================================================= */
+
+async function openFocus(
+  video,
+  card,
+  index
+){
+
+  /*
+     Hentikan semua video lain
+  */
+
+  videoElements.forEach(
+    other=>{
+
+      if(
+        other !== video
+      ){
+
+        other.pause();
+
+      }
+
+    }
+  );
+
+
+  /*
+     Simpan video aktif
+  */
+
+  currentVideo =
+    video;
+
+  currentCard =
+    card;
+
+  currentIndex =
+    index;
+
+
+  /*
+     Gunakan sumber video yang sama
+  */
+
+  focusVideo.src =
+    video.currentSrc ||
+    video.src;
+
+
+  /*
+     Mulai dari posisi video sebelumnya
+  */
+
+  try{
+
+    focusVideo.currentTime =
+      video.currentTime || 0;
+
+  }catch(e){}
+
+
+  /*
+     Tampilkan focus
+  */
+
+  focusOverlay.classList.add(
+    "show"
+  );
+
+
+  /*
+     Hilangkan scroll halaman
+  */
+
+  document.body.style.overflow =
+    "hidden";
+
+
+  /*
+     Putar video
+  */
+
+  try{
+
+    await focusVideo.play();
+
+  }catch(err){
+
+    showToast(
+      "Video tidak dapat diputar. Pastikan link MP4 dapat diakses."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   KLIK VIDEO FOKUS
+   PLAY / PAUSE
+========================================================= */
+
+focusVideo.addEventListener(
+  "click",
+  async ()=>{
+
+    if(
+      focusVideo.paused
+    ){
+
+      try{
+
+        await focusVideo.play();
+
+      }catch(e){}
+
+    }else{
+
+      focusVideo.pause();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   CLOSE FOCUS
+========================================================= */
+
+function closeFocus(){
+
+  if(
+    !currentVideo
+  ){
+
+    return;
+
+  }
+
+
+  /*
+     Simpan posisi terakhir
+  */
+
+  try{
+
+    currentVideo.currentTime =
+      focusVideo.currentTime;
+
+  }catch(e){}
+
+
+  /*
+     Jika video sedang jalan,
+     tetap lanjut di video card.
+  */
+
+  const wasPlaying =
+    !focusVideo.paused &&
+    !focusVideo.ended;
+
+
+  /*
+     Hentikan focus video
+  */
+
+  focusVideo.pause();
+
+  focusVideo.removeAttribute(
+    "src"
+  );
+
+  focusVideo.load();
+
+
+  /*
+     Tutup focus
+  */
+
+  focusOverlay.classList.remove(
+    "show"
+  );
+
+
+  document.body.style.overflow =
+    "";
+
+
+  /*
+     Jika tadi sedang play,
+     lanjutkan di card.
+  */
+
+  if(
+    wasPlaying
+  ){
+
+    currentVideo.play()
+    .catch(()=>{});
+
+  }
+
+
+  currentVideo =
+    null;
+
+  currentCard =
+    null;
+
+  currentIndex =
+    -1;
+
+}
+
+
+focusClose.addEventListener(
+  "click",
+  e=>{
+
+    e.stopPropagation();
+
+    closeFocus();
+
+  }
+);
+
+
+/*
+   Klik area gelap
+*/
+
+focusOverlay.addEventListener(
+  "click",
+  e=>{
+
+    if(
+      e.target === focusOverlay
+    ){
+
+      closeFocus();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   KEYBOARD ESC
+========================================================= */
 
 document.addEventListener(
   "keydown",
-  (e) => {
+  e=>{
 
     if(
-      e.key === "Escape" &&
-      activeCard
+      e.key === "Escape"
     ){
 
-      activeCard
-        .querySelector(".focus-close")
-        .click();
+      closeFocus();
 
     }
 
@@ -2255,11 +2379,12 @@ document.addEventListener(
 
 /* =========================================================
    LIVECHAT
-   ========================================================= */
+========================================================= */
 
-$("navLivechat").addEventListener(
+$("navLivechat")
+.addEventListener(
   "click",
-  (e) => {
+  e=>{
 
     e.preventDefault();
 
@@ -2267,7 +2392,7 @@ $("navLivechat").addEventListener(
       "LIVECHAT";
 
     $("modalText").textContent =
-      "Klik tombol di bawah untuk membuka Livechat. Link dapat Anda ganti di CONFIG.links.livechat.";
+      "Klik tombol di bawah untuk membuka Livechat.";
 
     $("modalAction").href =
       CONFIG.links.livechat;
@@ -2280,24 +2405,31 @@ $("navLivechat").addEventListener(
 );
 
 
-$("closeModal").addEventListener(
+$("closeModal")
+.addEventListener(
   "click",
-  () =>
-    $("modal").classList.remove(
+  ()=>{
+
+    $("modal")
+    .classList.remove(
       "show"
-    )
+    );
+
+  }
 );
 
 
-$("modal").addEventListener(
+$("modal")
+.addEventListener(
   "click",
-  (e) => {
+  e=>{
 
     if(
       e.target === $("modal")
     ){
 
-      $("modal").classList.remove(
+      $("modal")
+      .classList.remove(
         "show"
       );
 
@@ -2309,15 +2441,18 @@ $("modal").addEventListener(
 
 /* =========================================================
    SHARE
-   ========================================================= */
+========================================================= */
 
-$("shareBtn").addEventListener(
+$("shareBtn")
+.addEventListener(
   "click",
-  async () => {
+  async ()=>{
 
     try{
 
-      if(navigator.share){
+      if(
+        navigator.share
+      ){
 
         await navigator.share({
 
@@ -2334,9 +2469,10 @@ $("shareBtn").addEventListener(
 
       }else{
 
-        await navigator.clipboard.writeText(
-          location.href
-        );
+        await navigator.clipboard
+          .writeText(
+            location.href
+          );
 
         showToast(
           "Link halaman berhasil disalin."
@@ -2352,14 +2488,15 @@ $("shareBtn").addEventListener(
 
 /* =========================================================
    MENU
-   ========================================================= */
+========================================================= */
 
-$("moreBtn").addEventListener(
+$("moreBtn")
+.addEventListener(
   "click",
-  () => {
+  ()=>{
 
     showToast(
-      "Semua menu link dapat Anda ubah di bagian CONFIG pada file HTML."
+      "Menu dapat diubah melalui bagian CONFIG."
     );
 
   }
@@ -2367,23 +2504,27 @@ $("moreBtn").addEventListener(
 
 
 /* =========================================================
-   ANIMASI PENONTON
-   ========================================================= */
+   ONLINE COUNTER
+========================================================= */
 
-let online = 7;
+let online =
+  7;
 
 setInterval(
-  () => {
+  ()=>{
 
     online +=
       Math.random() > .5
-        ? 1
-        : -1;
+      ? 1
+      : -1;
 
     online =
       Math.max(
         3,
-        Math.min(18,online)
+        Math.min(
+          18,
+          online
+        )
       );
 
     document.title =
@@ -2396,7 +2537,7 @@ setInterval(
 
 /* =========================================================
    TOAST
-   ========================================================= */
+========================================================= */
 
 function showToast(text){
 
@@ -2416,7 +2557,7 @@ function showToast(text){
 
   window.toastTimer =
     setTimeout(
-      () => {
+      ()=>{
 
         toast.classList.remove(
           "show"
