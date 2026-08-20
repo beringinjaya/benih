@@ -104,11 +104,12 @@ button{
   overflow:hidden;
 
   background:
-    linear-gradient(
-      180deg,
-      rgba(5,28,65,.76),
-      rgba(2,8,23,.97)
-    ),
+  linear-gradient(
+    180deg,
+    #051c41 0%,
+    #03142e 45%,
+    #020817 100%
+  );
     radial-gradient(
       circle at 50% 20%,
       rgba(24,168,255,.10),
@@ -1714,6 +1715,27 @@ button{
     animation-iteration-count:1 !important;
     transition-duration:.01ms !important;
     scroll-behavior:auto !important;
+  }
+
+}
+/* =========================================================
+   CUSTOM BACKGROUND KHUSUS PC
+========================================================= */
+
+@media (min-width:700px){
+
+  body{
+    background-image:
+      linear-gradient(
+        rgba(2,8,23,.25),
+        rgba(2,8,23,.25)
+      ),
+      url("https://www.image2url.com/r2/default/images/1787214211152-d4a2c566-b872-4206-9e3f-28d0a1969062.png");
+
+    background-size:cover;
+    background-position:center center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
   }
 
 }
