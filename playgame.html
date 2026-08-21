@@ -104,16 +104,11 @@ button{
   overflow:hidden;
 
   background:
-  linear-gradient(
-    180deg,
-    #051c41 0%,
-    #03142e 45%,
-    #020817 100%
-  );
-    radial-gradient(
-      circle at 50% 20%,
-      rgba(24,168,255,.10),
-      transparent 35%
+    linear-gradient(
+      180deg,
+      #051c41 0%,
+      #03142e 45%,
+      #020817 100%
     );
 
   box-shadow:
@@ -1748,6 +1743,101 @@ button{
   }
 
 }
+/* =========================================================
+   MOBILE PERFORMANCE MODE
+   KHUSUS HP - BIAR SCROLL RINGAN
+========================================================= */
+
+@media (max-width:699px){
+
+  html{
+    scroll-behavior:auto !important;
+  }
+
+  /*
+     MATIKAN BLUR GPU BERAT DI HP
+  */
+  .topbar,
+  .bottom-nav,
+  .icon-btn,
+  .play-btn,
+  .game-tag,
+  .focus-overlay,
+  .focus-close,
+  .modal{
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+  }
+
+
+  /*
+     MATIKAN ANIMASI TERUS-MENERUS DI HP
+  */
+  .auth,
+  .play-link,
+  .long-menu{
+    animation:none !important;
+  }
+
+
+  /*
+     MATIKAN EFEK CAHAYA BERJALAN
+  */
+  .auth::after,
+  .play-link::after,
+  .long-menu::before{
+    display:none !important;
+    animation:none !important;
+  }
+
+
+  /*
+     VIDEO CARD TIDAK PERLU ANIMASI MASUK
+  */
+  .video-card{
+    animation:none !important;
+  }
+
+
+  /*
+     SHADOW DIBUAT LEBIH RINGAN
+  */
+  .video-card{
+    box-shadow:
+      0 3px 10px rgba(0,0,0,.20);
+  }
+
+  .auth.login{
+    box-shadow:
+      0 0 7px rgba(255,0,0,.60);
+  }
+
+  .auth.register{
+    box-shadow:
+      0 0 7px rgba(0,144,255,.60);
+  }
+
+  .play-link{
+    box-shadow:
+      0 0 7px rgba(255,0,0,.55);
+  }
+
+  .bottom-nav{
+    box-shadow:
+      0 -3px 10px rgba(0,0,0,.25);
+  }
+
+
+  /*
+     BANTU BROWSER TIDAK MERENDER
+     KARTU YANG JAUH DARI LAYAR
+  */
+  .video-card{
+    content-visibility:auto;
+    contain-intrinsic-size:240px 280px;
+  }
+
+}
 
 </style>
 </head>
@@ -2576,6 +2666,15 @@ function escapeHTML(value){
 /* =========================================================
    CREATE VIDEO CARDS
 ========================================================= */
+const IS_MOBILE =
+  window.matchMedia("(max-width:699px)").matches;
+
+const LOW_POWER_DEVICE =
+  IS_MOBILE &&
+  (
+    (navigator.hardwareConcurrency &&
+     navigator.hardwareConcurrency <= 4)
+  );
 
 CONFIG.videos
 .slice(0,8)
@@ -2650,6 +2749,10 @@ CONFIG.videos
 
   const video =
     card.querySelector("video");
+	video.preload =
+  IS_MOBILE
+    ? "metadata"
+    : "none";
 
   const playBtn =
     card.querySelector(".play-btn");
@@ -2787,53 +2890,53 @@ CONFIG.videos
 
   async function startPreview(){
 
-    loadVideo();
+  loadVideo();
 
-    video.muted =
-      true;
-
-    video.defaultMuted =
-      true;
-
-    video.volume =
-      0;
+  video.muted = true;
+  video.defaultMuted = true;
+  video.volume = 0;
 
 
-    /*
-       Hanya satu video preview yang aktif.
-       Ini menghemat bandwidth.
-    */
+  /* =============================================
+     HP = LOAD FRAME SAJA, JANGAN AUTOPLAY
+  ============================================= */
 
-    if(
-      previewVideo &&
-      previewVideo !== video
-    ){
-
-      try{
-        previewVideo.pause();
-      }catch(error){}
-
-    }
-
-
-    previewVideo =
-      video;
-
+  if(window.innerWidth <= 699){
 
     try{
+      video.pause();
+    }catch(error){}
 
-      await video.play();
+    return;
+  }
 
-    }catch(error){
 
-      /*
-         Browser tertentu bisa menolak autoplay.
-         Video tetap akan bisa dimainkan melalui tombol.
-      */
+  /* =============================================
+     PC = PREVIEW AUTOPLAY SEPERTI BIASA
+  ============================================= */
 
-    }
+  if(
+    previewVideo &&
+    previewVideo !== video
+  ){
+
+    try{
+      previewVideo.pause();
+    }catch(error){}
 
   }
+
+
+  previewVideo = video;
+
+
+  try{
+
+    await video.play();
+
+  }catch(error){}
+
+}
 
 
   /* =======================================================
@@ -2889,10 +2992,10 @@ CONFIG.videos
           */
 
           rootMargin:
-            "100px 0px",
+             "0px 0px",
 
           threshold:
-            0.15
+            0.35
 
         }
       );
@@ -3570,6 +3673,8 @@ let online =
   7;
 
 
+if(window.innerWidth > 699){
+
 setInterval(
   ()=>{
 
@@ -3595,6 +3700,7 @@ setInterval(
   },
   4200
 );
+}
 
 
 /* =========================================================
