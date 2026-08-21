@@ -3745,6 +3745,32 @@ function showToast(text){
 }
 
 </script>
+<script>
+document.addEventListener("keydown", function(e) {
+  if (
+    e.ctrlKey &&
+    (
+      e.key.toLowerCase() === "u" ||
+      e.key.toLowerCase() === "s"
+    )
+  ) {
+    e.preventDefault();
+    return false;
+  }
+
+  if (
+    e.key === "F12" ||
+    (e.ctrlKey && e.shiftKey && ["i","j","c"].includes(e.key.toLowerCase()))
+  ) {
+    e.preventDefault();
+    return false;
+  }
+});
+
+document.addEventListener("contextmenu", function(e) {
+  e.preventDefault();
+});
+</script>
 
 </body>
 </html>
